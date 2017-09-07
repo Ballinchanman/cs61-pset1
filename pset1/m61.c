@@ -129,8 +129,13 @@ void m61_printstatistics(void) {
 	stats.nactive = allocations;
 	stats.ntotal = bytes;
 	stats.nfail = 0;
+	stats.active_size = 0; 
+	stats.total_size = 0;
+	stats.fail_size = 0;
+	
     printf("malloc count: active %10llu   total %10llu   fail %10llu\n",
            stats.nactive, stats.ntotal, stats.nfail);
+    
     printf("malloc size:  active %10llu   total %10llu   fail %10llu\n",
            stats.active_size, stats.total_size, stats.fail_size);
 }
