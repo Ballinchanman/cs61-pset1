@@ -16,12 +16,17 @@ int bytes = 0;
 int allocations = 0;
 int fails = 0;
 
+// int frees = 0;
+// int frbytes = 0;
+//  int failbytes = 0;
+
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     
     // return request located at file: line 
     if (!malloc(sz)){
     	fails += 1;
+        // failbytes += sz;
     	abort();
     }
    
@@ -54,7 +59,9 @@ void m61_free(void *ptr, const char *file, int line) {
     else {
     free(ptr);
     bytes -= sizeof(*ptr);
+    // frbytes -= sizeof(*ptr);
     allocations -= 1;
+    // frees += 1;
         
     }
     printf("The free was called at location- %s : %d", file, line );
@@ -108,7 +115,20 @@ void m61_getstatistics(struct m61_statistics* stats) {
     // Your code here.
 
     stats->nactive = allocations;
+    // stats->nactive = allocations - frees;
+
+    // stats->active_size = bytes - frbytes;
+
     stats->ntotal = bytes;
+    // stats->ntotal = allocations;
+
+    // stats->total_size = bytes;
+
+    // stats->nfail = fails;
+
+    // stats->fail_size = failbytes;
+
+    // stats->heap_min = 
     
     // unsigned long long nactive;           // number of active allocations [#malloc - #free]
     // unsigned long long active_size;       // number of bytes in active allocations
