@@ -6,35 +6,48 @@
 #include <inttypes.h>
 #include <assert.h>
 
+
+
+//number of allocations
+int num_allocations = 0;
+
+//number of fails
+int num_fails = 0;
+
+//number of frees
+int num_frees = 0;
+
+//number of bytes allocated
+int alloc_bytes = 0;
+
+//number of bytes freed
+int freed_bytes = 0;
+
+//number of bytes failed
+int fail_bytes = 0;
+
 /// m61_malloc(sz, file, line)
 ///    Return a pointer to `sz` bytes of newly-allocated dynamic memory.
 ///    The memory is not initialized. If `sz == 0`, then m61_malloc may
 ///    either return NULL or a unique, newly-allocated pointer value.
 ///    The allocation request was at location `file`:`line`.
 
-int bytes = 0;
-int allocations = 0;
-int fails = 0;
-
-// int frees = 0;
-// int frbytes = 0;
-//  int failbytes = 0;
 
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     
     // return request located at file: line 
-    if (!malloc(sz)){
-    	fails += 1;
-        // failbytes += sz;
+    if (malloc(sizeof(sz)) == NULL){
+    	num_fails += 1;
+        fail_bytes += sz;
     	abort();
     }
    
     else {
     
-    allocations += 1;
-    bytes += sz;
-    	malloc(sz);
+    	num_allocations += 1;
+    	alloc_bytes += sz;
+    	return malloc(sizeof(sz));
     }
     
     //printf("Pointer name: %s, file name:%s, line number:%s \n", ptr, file, line);
@@ -52,19 +65,15 @@ void* m61_malloc(size_t sz, const char* file, int line) {
 void m61_free(void *ptr, const char *file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     // Your code here.
-    if(ptr == NULL){
-        ptr;
-    }
     
-    else {
-    free(ptr);
-    bytes -= sizeof(*ptr);
-    // frbytes -= sizeof(*ptr);
-    allocations -= 1;
-    // frees += 1;
-        
-    }
-    printf("The free was called at location- %s : %d", file, line );
+    	
+	alloc_bytes -= sizeof(ptr);
+	freed_bytes -= sizeof(ptr);
+	num_allocations -= 1;
+	num_frees += 1;
+    	free(ptr);
+    
+    //printf("The free was called at location- %s : %d", file, line );
     
     
 }
@@ -109,25 +118,27 @@ void* m61_calloc(size_t nmemb, size_t sz, const char* file, int line) {
 /// m61_getstatistics(stats)
 ///    Store the current memory statistics in `*stats`.
 
+
+
 void m61_getstatistics(struct m61_statistics* stats) {
     // Stub: set all statistics to enormous numbers
     memset(stats, 255, sizeof(struct m61_statistics));
     // Your code here.
 
-    stats->nactive = allocations;
-    // stats->nactive = allocations - frees;
+    stats->nactive = num_allocations;
+    stats->nactive = num_allocations - num_frees;
 
-    // stats->active_size = bytes - frbytes;
+    stats->active_size = alloc_bytes - freed_bytes;
 
-    stats->ntotal = bytes;
-    // stats->ntotal = allocations;
+    stats->ntotal = alloc_bytes;
+    stats->ntotal = num_allocations;
 
-    // stats->total_size = bytes;
+    stats->total_size = alloc_bytes;
 
-    // stats->nfail = fails;
+    stats->nfail = num_fails;
 
-    // stats->fail_size = failbytes;
-
+    stats->fail_size = fail_bytes;
+	
     // stats->heap_min = 
     
     // unsigned long long nactive;           // number of active allocations [#malloc - #free]
@@ -143,15 +154,16 @@ void m61_getstatistics(struct m61_statistics* stats) {
 /// m61_printstatistics()
 ///    Print the current memory statistics.
 
+    
 void m61_printstatistics(void) {
     struct m61_statistics stats;
     m61_getstatistics(&stats);
-	stats.nactive = allocations;
-	stats.ntotal = bytes;
-	stats.nfail = 0;
-	stats.active_size = 0; 
-	stats.total_size = 0;
-	stats.fail_size = 0;
+	stats.nactive = num_allocations;
+	stats.ntotal = alloc_bytes;
+	stats.nfail = num_fails;
+	stats.active_size = alloc_bytes - freed_bytes; 
+	stats.total_size = alloc_bytes;
+	stats.fail_size = fail_bytes;
 	
     printf("malloc count: active %10llu   total %10llu   fail %10llu\n",
            stats.nactive, stats.ntotal, stats.nfail);
