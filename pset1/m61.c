@@ -48,6 +48,7 @@ size_t active;
 
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
+
      void* mal = malloc(sizeof(sz)*(sz));
     // return request located at file: line 
     if (mal == NULL){
@@ -64,10 +65,10 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     	num_allocations += 1;
     	num_active += 1;
 
-    	alloc_bytes += sz;
-    	size += sz;
-   	active += sz;
-	       
+
+    	alloc_bytes += (sz);
+    	size += (sz);
+   
         if (min_adrs == NULL) {
             min_adrs = mal;
             max_adrs = mal;
@@ -79,12 +80,12 @@ void* m61_malloc(size_t sz, const char* file, int line) {
             max_adrs = mal;
         }
         
-    	return mal;
+    	//return mal;
     }
     
     //printf("Pointer name: %s, file name:%s, line number:%s \n", ptr, file, line);
     
-    
+    return mal;
    
 }
 
