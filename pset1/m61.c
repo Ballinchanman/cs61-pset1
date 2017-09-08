@@ -32,6 +32,12 @@ int size = 0;
 //number of bytes failed
 int fail_bytes = 0;
 
+//minimum address allocated
+void* min_adrs = NULL;
+
+//maximum address allocated
+void* max_adrs = NULL;
+
 /// m61_malloc(sz, file, line)
 ///    Return a pointer to `sz` bytes of newly-allocated dynamic memory.
 ///    The memory is not initialized. If `sz == 0`, then m61_malloc may
@@ -49,12 +55,27 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     }
    
     else {
-    	char* ptr = malloc(sizeof(sz));
+    	
     	num_allocations += 1;
     	num_active += 1;
+
     	alloc_bytes += sizeof(sz);
     	size += sz;
-    	return ptr;
+   
+    	
+        void* mal = malloc(sizeof(sz));
+        if (min_adrs == NULL) {
+            min_adrs = mal;
+            max_adrs = mal;
+        }
+        else if (mal - min_adrs < 0) {
+            min_adrs = mal;
+        }
+        else if (max_adrs - mal < 0) {
+            max_adrs = mal;
+        }
+        
+    	return mal;
     }
     
     //printf("Pointer name: %s, file name:%s, line number:%s \n", ptr, file, line);
@@ -146,7 +167,9 @@ void m61_getstatistics(struct m61_statistics* stats) {
 
     stats->fail_size = fail_bytes;
 	
-    // stats->heap_min = 
+    stats->heap_min = min_adrs;
+    
+    stats->heap_max = max_adrs;
     
   
 }
