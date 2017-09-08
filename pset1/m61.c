@@ -46,12 +46,15 @@ void* max_adrs = NULL;
 
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
-    
+     void* mal = malloc(sizeof(sz)*(sz));
     // return request located at file: line 
-    if (malloc(sizeof(sz)) == NULL){
-    	num_fails += 1;
-        fail_bytes += sz;
-    	abort();
+    if (mal == NULL){
+    	num_fails = 1;
+    	//num_fails += 1;
+        //fail_bytes += sz;
+    	//abort();
+    	void* heyoo = NULL;
+    	return heyoo;
     }
    
     else {
@@ -62,8 +65,7 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     	alloc_bytes += (sz);
     	size += (sz);
    
-    	
-        void* mal = malloc(sizeof(sz));
+       
         if (min_adrs == NULL) {
             min_adrs = mal;
             max_adrs = mal;
@@ -99,7 +101,7 @@ void m61_free(void *ptr, const char *file, int line) {
 	num_active -= 1;
 	num_frees += 1;
     	free(ptr);
-    	//size -= sizeof(char*);
+    	size -= sizeof(ptr);
     	
     //printf("The free was called at location- %s : %d", file, line );
     
@@ -182,15 +184,7 @@ void m61_printstatistics(void) {
     struct m61_statistics stats;
     m61_getstatistics(&stats);
 	
-// unsigned long long nactive; number of active allocations [#malloc - #free]
-    // unsigned long long active_size;       // number of bytes in active allocations
-    // unsigned long long ntotal;            // number of allocations, total
-    // unsigned long long total_size;        // number of bytes in allocations, total
-    // unsigned long long nfail;             // number of failed allocation attempts
-    // unsigned long long fail_size;         // number of bytes in failed allocation attempts
-    // char* heap_min;                       // smallest address in any region ever allocated
-    // char* heap_max;                       // largest address in any region ever allocated
-	
+
     printf("malloc count: active %10llu   total %10llu   fail %10llu\n",
            stats.nactive, stats.ntotal, stats.nfail);
     
