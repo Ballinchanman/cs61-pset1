@@ -59,8 +59,8 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     	num_allocations += 1;
     	num_active += 1;
 
-    	alloc_bytes += sizeof(sz);
-    	size += sz;
+    	alloc_bytes += (sz);
+    	size += (sz);
    
     	
         void* mal = malloc(sizeof(sz));
@@ -94,13 +94,13 @@ void m61_free(void *ptr, const char *file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     // Your code here.
     
-    	
-	//alloc_bytes -= sizeof(ptr);
+  
 	freed_bytes += sizeof(ptr);
 	num_active -= 1;
 	num_frees += 1;
     	free(ptr);
-    	size -= sizeof(ptr);
+    	//size -= sizeof(char*);
+    	
     //printf("The free was called at location- %s : %d", file, line );
     
     
