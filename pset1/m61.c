@@ -49,9 +49,9 @@ void* m61_malloc(size_t sz, const char* file, int line) {
      void* mal = malloc(sizeof(sz)*(sz));
     // return request located at file: line 
     if (mal == NULL){
-    	num_fails = 1;
-    	//num_fails += 1;
-        //fail_bytes += sz;
+    	
+    	num_fails += 1;
+        fail_bytes += sz;
     	//abort();
     	void* heyoo = NULL;
     	return heyoo;
