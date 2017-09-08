@@ -44,6 +44,8 @@ void* max_adrs = NULL;
 ///    either return NULL or a unique, newly-allocated pointer value.
 ///    The allocation request was at location `file`:`line`.
 
+size_t active;
+
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
      void* mal = malloc(sizeof(sz)*(sz));
@@ -62,10 +64,10 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     	num_allocations += 1;
     	num_active += 1;
 
-    	alloc_bytes += (sz);
-    	size += (sz);
-   
-       
+    	alloc_bytes += sz;
+    	size += sz;
+   	active += sz;
+	       
         if (min_adrs == NULL) {
             min_adrs = mal;
             max_adrs = mal;
@@ -101,7 +103,8 @@ void m61_free(void *ptr, const char *file, int line) {
 	num_active -= 1;
 	num_frees += 1;
     	free(ptr);
-    	size -= sizeof(ptr);
+    	
+    	size -= active;
     	
     //printf("The free was called at location- %s : %d", file, line );
     
@@ -158,7 +161,7 @@ void m61_getstatistics(struct m61_statistics* stats) {
     stats->nactive = num_active;
     
 
-    stats->active_size = size;
+    stats->active_size = alloc_bytes - freed_bytes;
 
     
     stats->ntotal = num_allocations;
