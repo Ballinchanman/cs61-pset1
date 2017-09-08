@@ -49,15 +49,14 @@ size_t active;
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
 
-     void* mal = malloc(sizeof(sz)*(sz));
+     //void* mal = malloc(sizeof(sz)*(sz));
+    void* mal = malloc(sizeof(sz)*(sz) + 4);
     // return request located at file: line 
     if (mal == NULL){
     	
     	num_fails += 1;
         fail_bytes += sz;
     	//abort();
-    	void* heyoo = NULL;
-    	return heyoo;
     }
    
     else {
@@ -84,7 +83,8 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     }
     
     //printf("Pointer name: %s, file name:%s, line number:%s \n", ptr, file, line);
-    
+    *mal = sz;
+    mal = mal + 1;
     return mal;
    
 }
@@ -99,8 +99,8 @@ void m61_free(void *ptr, const char *file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     // Your code here.
     
-  
-	freed_bytes += sizeof(ptr);
+    ptr = ptr - 1;
+	freed_bytes += *ptr;
 	num_active -= 1;
 	num_frees += 1;
     	free(ptr);
