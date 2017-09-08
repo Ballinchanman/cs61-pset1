@@ -47,11 +47,13 @@ void* max_adrs = NULL;
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     
+    void* mal = malloc(sizeof(sz));
     // return request located at file: line 
-    if (malloc(sizeof(sz)) == NULL){
+    //if (malloc(sizeof(sz)) == NULL){
+    if (mal == NULL){
     	num_fails += 1;
         fail_bytes += sz;
-    	abort();
+    	//abort();
     }
    
     else {
@@ -63,7 +65,7 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     	size += (sz);
    
     	
-        void* mal = malloc(sizeof(sz));
+        //void* mal = malloc(sizeof(sz));
         if (min_adrs == NULL) {
             min_adrs = mal;
             max_adrs = mal;
@@ -75,12 +77,12 @@ void* m61_malloc(size_t sz, const char* file, int line) {
             max_adrs = mal;
         }
         
-    	return mal;
+    	//return mal;
     }
     
     //printf("Pointer name: %s, file name:%s, line number:%s \n", ptr, file, line);
     
-    
+    return mal;
    
 }
 
