@@ -16,9 +16,9 @@ int bytes = 0;
 int allocations = 0;
 int fails = 0;
 
-// int frees = 0;
-// int frbytes = 0;
-//  int failbytes = 0;
+int frees = 0;
+int frbytes = 0;
+int failbytes = 0;
 
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
@@ -115,7 +115,7 @@ void m61_getstatistics(struct m61_statistics* stats) {
     // Your code here.
 
     stats->nactive = allocations;
-    // stats->nactive = allocations - frees;
+    stats->nactive = allocations - frees;
 
     // stats->active_size = bytes - frbytes;
 
