@@ -11,6 +11,9 @@
 //number of allocations
 int num_allocations = 0;
 
+//number of active allocations
+int num_active = 0;
+
 //number of fails
 int num_fails = 0;
 
@@ -44,10 +47,11 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     }
    
     else {
-    
+    	char* ptr = malloc(sizeof(sz));
     	num_allocations += 1;
+    	num_active += 1;
     	alloc_bytes += sz;
-    	return malloc(sizeof(sz));
+    	return ptr;
     }
     
     //printf("Pointer name: %s, file name:%s, line number:%s \n", ptr, file, line);
@@ -68,8 +72,8 @@ void m61_free(void *ptr, const char *file, int line) {
     
     	
 	alloc_bytes -= sizeof(ptr);
-	freed_bytes -= sizeof(ptr);
-	num_allocations -= 1;
+	freed_bytes += sizeof(ptr);
+	num_active -= 1;
 	num_frees += 1;
     	free(ptr);
     
@@ -125,12 +129,11 @@ void m61_getstatistics(struct m61_statistics* stats) {
     memset(stats, 255, sizeof(struct m61_statistics));
     // Your code here.
 
-    stats->nactive = num_allocations;
-    stats->nactive = num_allocations - num_frees;
-
+    stats->nactive = num_active;
+    
     stats->active_size = alloc_bytes - freed_bytes;
 
-    stats->ntotal = alloc_bytes;
+    
     stats->ntotal = num_allocations;
 
     stats->total_size = alloc_bytes;
@@ -141,14 +144,7 @@ void m61_getstatistics(struct m61_statistics* stats) {
 	
     // stats->heap_min = 
     
-    // unsigned long long nactive;           // number of active allocations [#malloc - #free]
-    // unsigned long long active_size;       // number of bytes in active allocations
-    // unsigned long long ntotal;            // number of allocations, total
-    // unsigned long long total_size;        // number of bytes in allocations, total
-    // unsigned long long nfail;             // number of failed allocation attempts
-    // unsigned long long fail_size;         // number of bytes in failed allocation attempts
-    // char* heap_min;                       // smallest address in any region ever allocated
-    // char* heap_max;                       // largest address in any region ever allocated
+  
 }
 
 /// m61_printstatistics()
@@ -158,12 +154,15 @@ void m61_getstatistics(struct m61_statistics* stats) {
 void m61_printstatistics(void) {
     struct m61_statistics stats;
     m61_getstatistics(&stats);
-	stats.nactive = num_allocations;
-	stats.ntotal = alloc_bytes;
-	stats.nfail = num_fails;
-	stats.active_size = alloc_bytes - freed_bytes; 
-	stats.total_size = alloc_bytes;
-	stats.fail_size = fail_bytes;
+	
+// unsigned long long nactive; number of active allocations [#malloc - #free]
+    // unsigned long long active_size;       // number of bytes in active allocations
+    // unsigned long long ntotal;            // number of allocations, total
+    // unsigned long long total_size;        // number of bytes in allocations, total
+    // unsigned long long nfail;             // number of failed allocation attempts
+    // unsigned long long fail_size;         // number of bytes in failed allocation attempts
+    // char* heap_min;                       // smallest address in any region ever allocated
+    // char* heap_max;                       // largest address in any region ever allocated
 	
     printf("malloc count: active %10llu   total %10llu   fail %10llu\n",
            stats.nactive, stats.ntotal, stats.nfail);
