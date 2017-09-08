@@ -35,7 +35,6 @@ int fail_bytes = 0;
 ///    either return NULL or a unique, newly-allocated pointer value.
 ///    The allocation request was at location `file`:`line`.
 
-
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     
@@ -131,6 +130,7 @@ void m61_getstatistics(struct m61_statistics* stats) {
 
     stats->nactive = num_active;
     
+
     stats->active_size = alloc_bytes - freed_bytes;
 
     
