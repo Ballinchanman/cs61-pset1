@@ -18,7 +18,7 @@ int num_active = 0;
 int num_fails = 0;
 
 //number of frees
-int num_frees = 0;
+// int num_frees = 0;
 
 //number of bytes allocated
 int alloc_bytes = 0;
@@ -27,16 +27,16 @@ int alloc_bytes = 0;
 int freed_bytes = 0;
 
 //size of active allocation
-int size = 0;
+//int size = 0;
 
 //number of bytes failed
 int fail_bytes = 0;
 
 //minimum address allocated
-void* min_adrs = NULL;
+int* min_adrs = NULL;
 
 //maximum address allocated
-void* max_adrs = NULL;
+int* max_adrs = NULL;
 
 /// m61_malloc(sz, file, line)
 ///    Return a pointer to `sz` bytes of newly-allocated dynamic memory.
@@ -49,8 +49,8 @@ size_t active;
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
 
-     //void* mal = malloc(sizeof(sz)*(sz));
-    void* mal = malloc(sizeof(sz)*(sz) + 4);
+     //void* mal = base_malloc(sizeof(sz)*(sz));
+    int* mal =  base_malloc(sizeof(sz)*(sz) + 4);
     // return request located at file: line 
     if (mal == NULL){
     	
@@ -66,7 +66,7 @@ void* m61_malloc(size_t sz, const char* file, int line) {
 
 
     	alloc_bytes += (sz);
-    	size += (sz);
+    	//size += (sz);
    
         if (min_adrs == NULL) {
             min_adrs = mal;
@@ -80,11 +80,12 @@ void* m61_malloc(size_t sz, const char* file, int line) {
         }
         
     	//return mal;
+        *mal = sz;
+        mal = mal + 1;
     }
     
     //printf("Pointer name: %s, file name:%s, line number:%s \n", ptr, file, line);
-    *mal = sz;
-    mal = mal + 1;
+    
     return mal;
    
 }
@@ -99,13 +100,20 @@ void m61_free(void *ptr, const char *file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     // Your code here.
     
-    ptr = ptr - 1;
-	freed_bytes += *ptr;
+    int* eraser = ptr - 4;
+    //ptr = ptr - 1;
+    //int* eraser = ptr - 1;
+	freed_bytes += *eraser;
+	//freed_bytes += (int*) ptr;
 	num_active -= 1;
-	num_frees += 1;
-    	free(ptr);
-    	
-    	size -= active;
+	// num_frees += 1;
+   	//base_free(ptr);
+   	printf("%d, %d, %p, %p\n", freed_bytes, *eraser, eraser, ptr);
+   	//ptr = ptr - 1;
+   	//printf("%d, %d, %p, %d, %p\n", freed_bytes, *eraser, eraser, *ptr, ptr);
+   	base_free(ptr);
+    
+    //size -= active;
     	
     //printf("The free was called at location- %s : %d", file, line );
     
