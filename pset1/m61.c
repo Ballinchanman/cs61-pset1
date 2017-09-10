@@ -44,19 +44,21 @@ int* max_adrs = NULL;
 ///    either return NULL or a unique, newly-allocated pointer value.
 ///    The allocation request was at location `file`:`line`.
 
-size_t active;
+int active; 
+int* size_ptr = NULL;
 
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
 
      //void* mal = base_malloc(sizeof(sz)*(sz));
-    int* mal =  base_malloc(sizeof(sz)*(sz) + 4);
+    int* mal = base_malloc(sizeof(sz)*(sz) + 4);
     // return request located at file: line 
     if (mal == NULL){
     	
     	num_fails += 1;
         fail_bytes += sz;
     	//abort();
+
     }
    
     else {
