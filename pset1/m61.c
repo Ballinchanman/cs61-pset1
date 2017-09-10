@@ -76,13 +76,13 @@ void* m61_malloc(size_t sz, const char* file, int line) {
    
         if (min_adrs == NULL) {
             min_adrs = mal;
-            max_adrs = mal;
+            max_adrs = mal + sz;
         }
         else if (mal - min_adrs < 0) {
             min_adrs = mal;
         }
         else if (max_adrs - mal < 0) {
-            max_adrs = mal;
+            max_adrs = mal + sz;
         }
         
     	//return mal;
