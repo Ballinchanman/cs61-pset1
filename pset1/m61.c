@@ -110,7 +110,7 @@ void m61_free(void *ptr, const char *file, int line) {
 	num_active -= 1;
 	// num_frees += 1;
    	//base_free(ptr);
-   	printf("%d, %d, %p, %p\n", freed_bytes, *eraser, eraser, ptr);
+   	//printf("%d, %d, %p, %p\n", freed_bytes, *eraser, eraser, ptr);
    	//ptr = ptr - 1;
    	//printf("%d, %d, %p, %d, %p\n", freed_bytes, *eraser, eraser, *ptr, ptr);
    	base_free(ptr);
