@@ -50,23 +50,27 @@ int* size_ptr = NULL;
 void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
 
+	
      //void* mal = base_malloc(sizeof(sz)*(sz));
-    int* mal = base_malloc(sizeof(sz)*(sz) + 4);
+    
+    int* space = base_malloc(1024+15);
+    int* mal = base_malloc((uintptr_t)sz+ 4);
+    memset_16aligned(mal, 0, 1024);
     // return request located at file: line 
-    if (mal == NULL){
+   
+    if (base_malloc(2*sz) == NULL){
     	
     	num_fails += 1;
         fail_bytes += sz;
+        return NULL;
     	//abort();
-
     }
    
     else {
     	
     	num_allocations += 1;
     	num_active += 1;
-
-
+	
     	alloc_bytes += (sz);
     	//size += (sz);
    
@@ -110,7 +114,7 @@ void m61_free(void *ptr, const char *file, int line) {
 	num_active -= 1;
 	// num_frees += 1;
    	//base_free(ptr);
-   	printf("%d, %d, %p, %p\n", freed_bytes, *eraser, eraser, ptr);
+   	//printf("%d, %d, %p, %p\n", freed_bytes, *eraser, eraser, ptr);
    	//ptr = ptr - 1;
    	//printf("%d, %d, %p, %d, %p\n", freed_bytes, *eraser, eraser, *ptr, ptr);
    	base_free(ptr);
@@ -183,9 +187,9 @@ void m61_getstatistics(struct m61_statistics* stats) {
 
     stats->fail_size = fail_bytes;
 	
-    stats->heap_min = min_adrs;
+    stats->heap_min = (char*) min_adrs;
     
-    stats->heap_max = max_adrs;
+    stats->heap_max = (char*) max_adrs;
     
   
 }
