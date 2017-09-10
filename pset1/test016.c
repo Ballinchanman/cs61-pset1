@@ -7,6 +7,7 @@
 int main() {
     size_t very_large_nmemb = (size_t) -1 / 8 + 2;
     char* p = (char*) calloc(very_large_nmemb, 16);
+    printf("%c %p\n", *p, p);
     assert(p == NULL);
     m61_printstatistics();
 }

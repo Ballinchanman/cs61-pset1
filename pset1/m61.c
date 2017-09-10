@@ -142,6 +142,8 @@ void* m61_realloc(void* ptr, size_t sz, const char* file, int line) {
         // Copy the data from `ptr` into `new_ptr`.
         // To do that, we must figure out the size of allocation `ptr`.
         // Your code here (to fix test014).
+        int* eraser = ptr - 4;
+	    memcpy(new_ptr, ptr, *eraser);
     }
     m61_free(ptr, file, line);
     return new_ptr;
