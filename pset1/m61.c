@@ -51,14 +51,11 @@ void* m61_malloc(size_t sz, const char* file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
 
 	
-     //void* mal = base_malloc(sizeof(sz)*(sz));
+     int* mal = base_malloc(10 * sz);
     
-    int* space = base_malloc(1024+15);
-    int* mal = base_malloc((uintptr_t)sz+ 4);
-    memset_16aligned(mal, 0, 1024);
     // return request located at file: line 
    
-    if (base_malloc(2*sz) == NULL){
+    if (base_malloc(16*sz) == NULL){
     	
     	num_fails += 1;
         fail_bytes += sz;
@@ -105,7 +102,7 @@ void* m61_malloc(size_t sz, const char* file, int line) {
 void m61_free(void *ptr, const char *file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     // Your code here.
-    
+    if(ptr) { 
     int* eraser = ptr - 4;
     //ptr = ptr - 1;
     //int* eraser = ptr - 1;
@@ -122,7 +119,7 @@ void m61_free(void *ptr, const char *file, int line) {
     //size -= active;
     	
     //printf("The free was called at location- %s : %d", file, line );
-    
+    }
     
 }
 
