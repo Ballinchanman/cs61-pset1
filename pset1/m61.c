@@ -52,22 +52,25 @@ void* m61_malloc(size_t sz, const char* file, int line) {
 
      //void* mal = base_malloc(sizeof(sz)*(sz));
     //int* mal = base_malloc(sizeof(sz)*(sz) + 4);
-    int* mal = base_malloc(sz + sizeof(sz));
+    //int* mal = base_malloc(sz + sizeof(sz));
+	
+    int* mal = base_malloc(10 * sz);
+
     // return request located at file: line 
-    if (mal == NULL){
+   
+    if (base_malloc(16*sz) == NULL){
     	
     	num_fails += 1;
         fail_bytes += sz;
+        return NULL;
     	//abort();
-
     }
    
     else {
     	
     	num_allocations += 1;
     	num_active += 1;
-
-
+	
     	alloc_bytes += (sz);
     	//size += (sz);
    
@@ -102,9 +105,8 @@ void* m61_malloc(size_t sz, const char* file, int line) {
 void m61_free(void *ptr, const char *file, int line) {
     (void) file, (void) line;   // avoid uninitialized variable warnings
     // Your code here.
-    
-    if (*ptr) {
-        
+
+    if(ptr) { 
     int* eraser = ptr - 4;
     //ptr = ptr - 1;
     //int* eraser = ptr - 1;
@@ -122,8 +124,6 @@ void m61_free(void *ptr, const char *file, int line) {
     }
     	
     //printf("The free was called at location- %s : %d", file, line );
-    
-    
 }
 
 /// m61_realloc(ptr, sz, file, line)
@@ -187,9 +187,9 @@ void m61_getstatistics(struct m61_statistics* stats) {
 
     stats->fail_size = fail_bytes;
 	
-    stats->heap_min = min_adrs;
+    stats->heap_min = (char*) min_adrs;
     
-    stats->heap_max = max_adrs;
+    stats->heap_max = (char*) max_adrs;
     
   
 }
